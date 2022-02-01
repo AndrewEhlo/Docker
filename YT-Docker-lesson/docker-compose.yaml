@@ -1,0 +1,12 @@
+version: "3.9" 
+services:
+  web:
+    image: web
+    ports:
+      - "8080:8080"
+    volumes:
+      - webvolume:/usr/src/app/
+  apache:
+    image: httpd
+volumes:
+  webvolume: /home/ubuntu/docker_lesson/Docker/YT-Docker-lesson/web-hello-world
