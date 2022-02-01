@@ -9,4 +9,4 @@ services:
   apache:
     image: httpd
 volumes:
-  webvolume: /home/ubuntu/docker_lesson/Docker/YT-Docker-lesson/web-hello-world
+  - webvolume: /home/ubuntu/docker_lesson/Docker/YT-Docker-lesson/web-hello-world
