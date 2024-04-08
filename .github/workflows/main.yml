@@ -1,0 +1,17 @@
+name: scan
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: Scan
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ghcr.io/virtocommerce/platform:3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
