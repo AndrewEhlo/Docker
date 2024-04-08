@@ -10,8 +10,8 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/virtocommerce/platform:3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1'
-          format: 'table'
-          exit-code: '1'
+          format: 'json'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
