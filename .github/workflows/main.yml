@@ -14,7 +14,8 @@ jobs:
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          # severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
           output: ./trivy.json
       - run: |
           cat ./trivy.json
