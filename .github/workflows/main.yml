@@ -49,4 +49,18 @@ jobs:
 
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+
+      - name: Post merge blocking comment
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const context = github.context;
+            const message = 'Merge blocked: Please resolve the blocking conditions before merging.';
+            github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
+            });
           
