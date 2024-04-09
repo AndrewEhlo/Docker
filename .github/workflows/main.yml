@@ -50,7 +50,6 @@ jobs:
           echo "::set-output name=VULN_PACKAGES::$packages"
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-
       - name: Post merge blocking comment
         uses: actions/github-script@v5
         with:
