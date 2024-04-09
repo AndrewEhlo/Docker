@@ -43,8 +43,8 @@ jobs:
           }
           $packages = $reportHash.GetEnumerator() | Sort-Object Name
           $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          cat $packages
-          cat $cves
+          echo $packages
+          echo $cves
           echo "VULN_PACKAGES=$packages" >> $GITHUB_ENV
           echo "VULN_CVES=$cves" >> $GITHUB_ENV
       - run: |
