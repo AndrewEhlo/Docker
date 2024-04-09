@@ -51,6 +51,6 @@ jobs:
           echo "VULN_PACKAGES=$packages" >> $GITHUB_OUTPUT
           echo "VULN_CVES=$cves" >> $GITHUB_OUTPUT
       - run: |
-          echo ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
-          echo ${{ steps.trivyResult.outputs.VULN_CVES }}
+          echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+          echo "VULN_CVES: ${{ steps.trivyResult.outputs.VULN_CVES }}"
           
