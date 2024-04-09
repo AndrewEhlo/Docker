@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       tag: '3.809.0-alpha.12863-dev-06cf1fbb'
+      VULN_PACKAGES: ''
+      VULN_CVES: ''
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
