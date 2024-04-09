@@ -36,21 +36,21 @@ jobs:
           $reportHash = @{}
           $cve = @()
           while($i -lt $report.Results.Vulnerabilities.Count){
-              if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
-                  $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
-              }
+              # if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
+              #     $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
+              # }
               if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
                   $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
               }
               $i += 1
           }
           $packages = $reportHash.GetEnumerator() | Sort-Object Name
-          $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          echo $packages
-          echo $cves
-          echo "::set-output name=VULN_PACKAGES::$packages"
-          echo "VULN_CVES=$cves" >> $GITHUB_OUTPUT
+          # $cves = $cve.GetEnumerator() | Sort-Object -Descending
+          # echo $packages
+          # echo $cves
+          echo "::set-output name=VULN_PACKAGES::$($reportHash.GetEnumerator() | Sort-Object Name)"
+          # echo "VULN_CVES=$cves" >> $GITHUB_OUTPUT
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-          echo "VULN_CVES: ${{ steps.trivyResult.outputs.VULN_CVES }}"
+          # echo "VULN_CVES: ${{ steps.trivyResult.outputs.VULN_CVES }}"
           
