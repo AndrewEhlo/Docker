@@ -25,7 +25,9 @@ jobs:
         with:
           name: '${{ env.tag }}.json'
           path: './${{ env.tag }}.json'
-      - run: |
+      - name: Process results
+        shell: pwsh
+        run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
           $i = 0
           $reportHash = @{}
