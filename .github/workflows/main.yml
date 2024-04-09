@@ -41,6 +41,6 @@ jobs:
               }
               $i += 1
           }
-          $reportHash
-          $cve
+          $reportHash.GetEnumerator() | Sort-Object Name
+          $cve.GetEnumerator() | Sort-Object -Descending
           
