@@ -18,11 +18,27 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: './${{ env.tag }}.json'
-      - run: |
-          cat './${{ env.tag }}.json'
+      # - run: |
+      #     cat './${{ env.tag }}.json'
       - name: Publish file
         uses: actions/upload-artifact@v2
         with:
           name: '${{ env.tag }}.json'
           path: './${{ env.tag }}.json'
+      - run: |
+          $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
+          $i = 0
+          $reportHash = @{}
+          $cve = @()
+          while($i -lt $report.Results.Vulnerabilities.Count){
+              if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
+                  $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
+              }
+              if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
+                  $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
+              }
+              $i += 1
+          }
+          $reportHash
+          $cve
           
