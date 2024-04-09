@@ -47,9 +47,7 @@ jobs:
           }
           $packages = $reportHash.GetEnumerator() | Sort-Object Name
           # $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          
           echo "::set-output name=VULN_PACKAGES::$packages"
-
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
 
