@@ -15,13 +15,13 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          output: ./platform:3.809.0-alpha.12863-dev-06cf1fbb.json
+          output: ./3.809.0-alpha.12863-dev-06cf1fbb.json
       - run: |
-          cat ./platform:3.809.0-alpha.12863-dev-06cf1fbb.json
+          cat ./3.809.0-alpha.12863-dev-06cf1fbb.json
       - name: Publish file
         uses: actions/upload-artifact@v2
         with:
-          name: platform:3.809.0-alpha.12863-dev-06cf1fbb.json
-          path: ./platform:3.809.0-alpha.12863-dev-06cf1fbb.json
+          name: 3.809.0-alpha.12863-dev-06cf1fbb.json
+          path: ./3.809.0-alpha.12863-dev-06cf1fbb.json
       - run: |
           
