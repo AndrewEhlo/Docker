@@ -7,16 +7,16 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.19.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/virtocommerce/platform:3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1'
           format: 'json'
           exit-code: '0'
           ignore-unfixed: true
-          #vuln-type: 'os,library'
-          vuln-type: 'library'
+          vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: ./trivy.json
+          list-all-pkgs: true
       - run: |
           cat ./trivy.json
       - name: Publish file
