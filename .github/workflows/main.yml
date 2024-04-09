@@ -21,7 +21,7 @@ jobs:
       - name: Publish file
         uses: actions/upload-artifact@v2
         with:
-          name: trivy.json
+          name: platform:3.809.0-alpha.12863-dev-06cf1fbb.json
           path: ./platform:3.809.0-alpha.12863-dev-06cf1fbb.json
       - run: |
           
