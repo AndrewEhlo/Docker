@@ -41,10 +41,10 @@ jobs:
               }
               $i += 1
           }
-          # $reportHash.GetEnumerator() | Sort-Object Name
-          # $cve.GetEnumerator() | Sort-Object -Descending
-          echo "VULN_PACKAGES=$reportHash.GetEnumerator() | Sort-Object Name" >> $GITHUB_ENV
-          echo "VULN_CVES=$cve.GetEnumerator() | Sort-Object -Descending" >> $GITHUB_ENV
+          $packages = $reportHash.GetEnumerator() | Sort-Object Name
+          $cves = $cve.GetEnumerator() | Sort-Object -Descending
+          echo "VULN_PACKAGES=$packages" >> $GITHUB_ENV
+          echo "VULN_CVES=$cves" >> $GITHUB_ENV
       - run: |
           echo ${{ env.VULN_PACKAGES }}
           echo ${{ env.VULN_CVES }}
