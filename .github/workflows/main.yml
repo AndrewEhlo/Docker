@@ -18,3 +18,8 @@ jobs:
           output: ./trivy.json
       - run: |
           cat ./trivy.json
+      - name: Publish file
+        uses: actions/upload-artifact@v2
+        with:
+          name: trivy.json
+          path: ./trivy.json
