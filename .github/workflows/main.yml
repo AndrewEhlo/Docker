@@ -1,6 +1,9 @@
 name: scan
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      [dev]
 jobs:
   build:
     name: Scan
