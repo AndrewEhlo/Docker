@@ -12,7 +12,7 @@ jobs:
           image-ref: 'ghcr.io/virtocommerce/platform:3.809.0-alpha.12863-dev-06cf1fbb'
           format: 'json'
           exit-code: '0'
-          ignore-unfixed: false
+          ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: ./3.809.0-alpha.12863-dev-06cf1fbb.json
