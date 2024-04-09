@@ -15,13 +15,13 @@ jobs:
           ignore-unfixed: false
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          output: ./trivy.json
+          output: ./3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1.json
       - run: |
-          cat ./trivy.json
+          cat ./3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1.json
       - name: Publish file
         uses: actions/upload-artifact@v2
         with:
           name: trivy.json
-          path: ./trivy.json
+          path: ./3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1.json
       - run: |
           
