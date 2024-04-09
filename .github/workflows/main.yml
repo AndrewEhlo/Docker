@@ -12,11 +12,10 @@ jobs:
           image-ref: 'ghcr.io/virtocommerce/platform:3.817.0-alpha.12888-vcst-567-contacts-redesign-dcacccf1'
           format: 'json'
           exit-code: '0'
-          ignore-unfixed: true
+          ignore-unfixed: false
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: ./trivy.json
-          list-all-pkgs: true
       - run: |
           cat ./trivy.json
       - name: Publish file
@@ -24,3 +23,5 @@ jobs:
         with:
           name: trivy.json
           path: ./trivy.json
+      - run: |
+          
