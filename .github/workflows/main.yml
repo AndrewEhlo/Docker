@@ -48,7 +48,7 @@ jobs:
           # $cves = $cve.GetEnumerator() | Sort-Object -Descending
           # echo $packages
           # echo $cves
-          echo "::set-output name=VULN_PACKAGES::$($reportHash.GetEnumerator() | Sort-Object Name)" >> "$GITHUB_OUTPUT"
+          echo "::set-output name=VULN_PACKAGES::$packages" >> "$GITHUB_OUTPUT"
           # echo "VULN_CVES=$cves" >> $GITHUB_OUTPUT
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
