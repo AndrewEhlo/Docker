@@ -34,7 +34,7 @@ jobs:
         shell: pwsh
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
-          if ($report != ''){
+          if ($report -ne ''){
             $i = 0
             $reportHash = @{}
             $cve = @()
@@ -94,5 +94,6 @@ jobs:
             /repos/${{ github.repository }}/labels `
              -f "name=VULNERABILITY" -f "description=Docker image vulnerabilities found on `Run Trivy vulnerability scanner` step." -f "color=f29513"
            }
+           # try {}
           
           
