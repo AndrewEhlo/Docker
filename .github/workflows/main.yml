@@ -30,7 +30,6 @@ jobs:
           name: '${{ env.tag }}.json'
           path: './${{ env.tag }}.json'
       - name: Process results
-        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
         id: trivyResult
         shell: pwsh
         run: |
