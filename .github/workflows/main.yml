@@ -34,21 +34,23 @@ jobs:
         shell: pwsh
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
-          $i = 0
-          $reportHash = @{}
-          $cve = @()
-          while($i -lt $report.Results.Vulnerabilities.Count){
-              # if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
-              #     $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
-              # }
-              if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
-                  $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
-              }
-              $i += 1
+          if ($report != ''){
+            $i = 0
+            $reportHash = @{}
+            $cve = @()
+            while($i -lt $report.Results.Vulnerabilities.Count){
+                # if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
+                #     $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
+                # }
+                if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
+                    $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
+                }
+                $i += 1
+            }
+            $packages = $reportHash.GetEnumerator() | Sort-Object Name
+            # $cves = $cve.GetEnumerator() | Sort-Object -Descending
+            echo "::set-output name=VULN_PACKAGES::$packages"
           }
-          $packages = $reportHash.GetEnumerator() | Sort-Object Name
-          # $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          echo "::set-output name=VULN_PACKAGES::$packages"
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
       # - name: Post comment
