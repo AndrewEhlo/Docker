@@ -30,7 +30,7 @@ jobs:
           name: '${{ env.tag }}.json'
           path: './${{ env.tag }}.json'
       - name: Process results
-        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES }} 
+        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != 0 }} 
         id: trivyResult
         shell: pwsh
         run: |
@@ -76,7 +76,7 @@ jobs:
       #       });
       #       console.log(response);
       - shell: pwsh
-        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES }} 
+        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != 0 }} 
         run: |
           $labels = @()
           try {
