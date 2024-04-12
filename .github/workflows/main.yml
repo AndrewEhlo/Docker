@@ -16,7 +16,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
           format: 'json'
-          exit-code: '0'
+          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -50,17 +50,27 @@ jobs:
           echo "::set-output name=VULN_PACKAGES::$packages"
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-
       - name: Post merge blocking comment
-        uses: actions/github-script@v5
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const message = 'Merge blocked: Please resolve the blocking conditions before merging.';
-            github.issues.createComment({
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
+      - name: Block merge
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const response = await github.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
+              labels: ['unmergeable']
             });
+            console.log(response);
           
