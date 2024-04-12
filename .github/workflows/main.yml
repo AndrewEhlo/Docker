@@ -70,7 +70,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['unmergeable']
+              labels: ['`e[33mVulnerabilities found!']
             });
             console.log(response);
           
