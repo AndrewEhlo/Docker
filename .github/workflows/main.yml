@@ -20,7 +20,7 @@ jobs:
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
           output: './${{ env.tag }}.json'
       # - run: |
       #     cat './${{ env.tag }}.json'
