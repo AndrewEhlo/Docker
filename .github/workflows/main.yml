@@ -1,6 +1,9 @@
 name: scan
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      [dev]
 jobs:
   build:
     name: Scan
@@ -13,7 +16,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
           format: 'json'
-          exit-code: '0'
+          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
@@ -44,9 +47,30 @@ jobs:
           }
           $packages = $reportHash.GetEnumerator() | Sort-Object Name
           # $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          
           echo "::set-output name=VULN_PACKAGES::$packages"
-
       - run: |
           echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+      - name: Post comment
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
+            })
+      - name: Block merge
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const response = await github.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['unmergeable']
+            });
+            console.log(response);
           
