@@ -82,6 +82,8 @@ jobs:
           try {
             $labels = gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels | convertFrom-Json
             $labels.gettype()
+            $labels[0]
+            $labels[0].Name
             echo "Labels = $labels.name"
            } catch { echo "Label exists $labels" }
           if ($labels -notcontains 'VULNERABILITY'){
