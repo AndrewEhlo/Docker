@@ -76,7 +76,7 @@ jobs:
       #       });
       #       console.log(response);
       - shell: pwsh
-        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
+        # if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
         run: |
           $labels = @()
           try {
