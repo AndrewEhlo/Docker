@@ -57,8 +57,10 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const ref = github.context.ref;
+            const PRnumber = ref.split("/")[0];
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: PRnumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
