@@ -12,42 +12,46 @@ jobs:
       tag: '3.809.0-alpha.12863-dev-06cf1fbb'
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          #image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
-          image-ref: 'ghcr.io/virtocommerce/virtostart:3.818.0-8a4fba1e'
-          format: 'json'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
-          output: './${{ env.tag }}.json'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     #image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
+      #     image-ref: 'ghcr.io/virtocommerce/virtostart:3.818.0-8a4fba1e'
+      #     format: 'json'
+      #     exit-code: '0'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL'
+      #     output: './${{ env.tag }}.json'
+          
       # - run: |
       #     cat './${{ env.tag }}.json'
-      - name: Publish file
-        uses: actions/upload-artifact@v2
-        with:
-          name: '${{ env.tag }}.json'
-          path: './${{ env.tag }}.json'
-      - name: Process results
-        id: trivyResult
-        shell: pwsh
-        run: |
-          $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
-          if ($report -ne ''){
-            $reportHash = @{}
-            foreach ($vulnerability in $report.Results) {
-              if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
-                  $reportHash.Add($($vulnerability.Vulnerabilities.PkgName),$($vulnerability.Vulnerabilities.FixedVersion))
-                  # $reportHash
-              }
-          }
-            $packages = $reportHash.GetEnumerator() | Sort-Object Name
-            echo "::set-output name=VULN_PACKAGES::$packages"
-          }
-      - run: |
-          echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+      
+      # - name: Publish file
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: '${{ env.tag }}.json'
+      #     path: './${{ env.tag }}.json'
+      # - name: Process results
+      #   id: trivyResult
+      #   shell: pwsh
+      #   run: |
+      #     $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
+      #     if ($report -ne ''){
+      #       $reportHash = @{}
+      #       foreach ($vulnerability in $report.Results) {
+      #         if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
+      #             $reportHash.Add($($vulnerability.Vulnerabilities.PkgName),$($vulnerability.Vulnerabilities.FixedVersion))
+      #             # $reportHash
+      #         }
+      #     }
+      #       $packages = $reportHash.GetEnumerator() | Sort-Object Name
+      #       echo "::set-output name=VULN_PACKAGES::$packages"
+      #     }
+      # - run: |
+      #     echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+
+          
       # - name: Post comment
       #   if: ${{ github.event_name == 'pull_request' }}
       #   uses: actions/github-script@v7
@@ -77,7 +81,7 @@ jobs:
           $labels = @()
           try {
             $labels = gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels
-            echo "Labels = $labels"
+            echo "Labels = $labels.name"
            } catch { echo "Label exists $labels" }
           if ($labels -notcontains 'VULNERABILITY'){
             gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels -f "name=VULNERABILITY" -f "description=Docker image vulnerabilities found on `Run Trivy vulnerability scanner` step." -f "color=f29513"
