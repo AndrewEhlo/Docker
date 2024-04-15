@@ -97,7 +97,7 @@ jobs:
         run: |
           $labels = $labelsList = @()
           echo "Getting the list of labels"
-          $labels = gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels | convertFrom-Json
+          $labels = $(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels) | convertFrom-Json
           foreach ($l in $labels){
             $labelsList += $l.Name
           }
@@ -109,7 +109,7 @@ jobs:
           }
           $ref = "${{ GITHUB.REF_NAME }}"
           $PRnumber = $ref.Split("/")[0]
-          $commentBody = $(gh api "/repos/${{ github.repository }}/issues/comments/$PRnumber" | jq -r '.body')
+          $commentBody = $(gh api "  /repos/${{ github.repository }}/issues/$PRnumber/comments" | jq -r '.body')
           echo "Comment body: $commentBody"
           echo "Set new comment body and label to PR"
           gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=$commentBody\n [PackageName Version(s)WithFix]\n ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
