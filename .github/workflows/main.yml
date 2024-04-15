@@ -21,7 +21,7 @@ jobs:
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
           output: './${{ env.tag }}.json'
           
       # - run: |
@@ -99,7 +99,7 @@ jobs:
             -H "Accept: application/vnd.github+json" `
             -H "X-GitHub-Api-Version: 2022-11-28" `
             /repos/${{ github.repository }}/issues/$PRnumber `
-             -f "title=Docker image vulnerabilities found. " -f "body=[PackageName FixedVersion] ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
+            -f "body=[PackageName Version(s)WithFix]\n ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
           # try {
           #   gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber/labels -f "labels[]=VULNERABILITY"
           # } catch { echo "Failed to add label" }
