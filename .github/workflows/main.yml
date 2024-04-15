@@ -95,27 +95,25 @@ jobs:
       - shell: pwsh
         # if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
         run: |
-          $labels = @()
-          try {
-            $labels = gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels | convertFrom-Json
-            $labelsList = @()
-            foreach ($l in $labels){
-              $labelsList += $l.Name
-            }
-            $labelList
-           } catch { echo "Label exists $labels" }
+          $labels = $labelsList = @()
+          echo "Getting the list of labels"
+          $labels = gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels | convertFrom-Json
+          foreach ($l in $labels){
+            $labelsList += $l.Name
+          }
+          echo "Labels found: $labelList"
+          echo "Checking 'VULNERABILITY' label to exist"
           if ($labelsList -notcontains 'VULNERABILITY'){
+            echo "Creating 'VULNERABILITY' label "
             gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels -f "name=VULNERABILITY" -f "description=Docker image vulnerabilities found on `Run Trivy vulnerability scanner` step." -f "color=f29513"
           }
           $ref = "${{ GITHUB.REF_NAME }}"
           $PRnumber = $ref.Split("/")[0]
           $commentBody = $(gh api "/repos/${{ github.repository }}/issues/comments/$PRnumber" | jq -r '.body')
-          gh api `
-            --method PATCH `
-            -H "Accept: application/vnd.github+json" `
-            -H "X-GitHub-Api-Version: 2022-11-28" `
-            /repos/${{ github.repository }}/issues/$PRnumber `
-            -f "body=$commentBody\n [PackageName Version(s)WithFix]\n ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
+          echo "Comment body: $commentBody"
+          echo "Set new comment body and label to PR"
+          gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=$commentBody\n [PackageName Version(s)WithFix]\n ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
+          
           # try {
           #   gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber/labels -f "labels[]=VULNERABILITY"
           # } catch { echo "Failed to add label" }
