@@ -37,6 +37,7 @@ jobs:
         shell: pwsh
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
+          $reportHash = @{}
           # if ($report -ne ''){
           #   $reportHash = @{}
           #   foreach ($vulnerability in $report.Results) {
