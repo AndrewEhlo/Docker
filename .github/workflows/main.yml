@@ -111,9 +111,5 @@ jobs:
           $PRnumber = $ref.Split("/")[0]
           echo "Set new comment body and label to PR"
           gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=$commentBody\n [PackageName Version(s)WithFix]\n ${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
-          
-          # try {
-          #   gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber/labels -f "labels[]=VULNERABILITY"
-          # } catch { echo "Failed to add label" }
-          
+
           
