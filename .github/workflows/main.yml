@@ -36,20 +36,14 @@ jobs:
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
           if ($report -ne ''){
-            $i = 0
             $reportHash = @{}
-            $cve = @()
-            while($i -lt $report.Results.Vulnerabilities.Count){
-                # if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
-                #     $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
-                # }
-                if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
-                    $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
-                }
-                $i += 1
-            }
+            foreach ($vulnerability in $report.Results) {
+              if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
+                  $reportHash.Add($($vulnerability.Vulnerabilities.PkgName),$($vulnerability.Vulnerabilities.FixedVersion))
+                  # $reportHash
+              }
+          }
             $packages = $reportHash.GetEnumerator() | Sort-Object Name
-            # $cves = $cve.GetEnumerator() | Sort-Object -Descending
             echo "::set-output name=VULN_PACKAGES::$packages"
           }
       - run: |
