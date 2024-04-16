@@ -63,8 +63,8 @@ jobs:
           }
           # $packages = $reportHash.GetEnumerator() | Sort-Object Name
           $text = @()
-          $packages.keys | ForEach-Object{
-            $text += '{0} : {1}' -f $_, $packages[$_]
+          $reportHash.keys | ForEach-Object{
+            $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
           # echo "::set-output name=VULN_PACKAGES::$packages"
           echo "::set-output name=VULN_PACKAGES::$text"
