@@ -10,19 +10,23 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       tag: '3.809.0-alpha.12863-dev-06cf1fbb'
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
+          #image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
+          image-ref: 'ghcr.io/virtocommerce/virtostart:3.818.0-8a4fba1e'
           format: 'json'
-          exit-code: '1'
+          exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: './${{ env.tag }}.json'
+          
       # - run: |
       #     cat './${{ env.tag }}.json'
+      
       - name: Publish file
         uses: actions/upload-artifact@v2
         with:
@@ -33,44 +37,84 @@ jobs:
         shell: pwsh
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
-          $i = 0
           $reportHash = @{}
-          $cve = @()
-          while($i -lt $report.Results.Vulnerabilities.Count){
-              # if($cve -notcontains $report.Results.Vulnerabilities.VulnerabilityID[$i]){
-              #     $cve += $($report.Results.Vulnerabilities.VulnerabilityID[$i])
-              # }
-              if($reportHash.Keys -notcontains $report.Results.Vulnerabilities[$i].PkgName){
-                  $reportHash.Add($($report.Results.Vulnerabilities[$i].PkgName),$($report.Results.Vulnerabilities[$i].FixedVersion))
-              }
-              $i += 1
+          # if ($report -ne ''){
+          #   $reportHash = @{}
+          #   foreach ($vulnerability in $report.Results) {
+          #     if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
+          #         $reportHash.Add($($vulnerability.Vulnerabilities.PkgName),$($vulnerability.Vulnerabilities.FixedVersion))
+          #         # $reportHash
+          #     }
+          # }
+          foreach ($vulnerability in $report.Results) {
+            if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains "[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)"){
+                if ($vulnerability.Vulnerabilities.PkgName.GetType().Name -eq 'String' -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
+                    $reportHash.Add("[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)","$($vulnerability.Vulnerabilities.FixedVersion)<br />")
+                } else {
+                    $i = 0
+                    while ($i -lt $vulnerability.Vulnerabilities.PkgName.Length) {
+                        if ($reportHash.Keys -notcontains "[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])"){
+                            $reportHash.Add( "[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])","$($vulnerability.Vulnerabilities.FixedVersion[$i])<br />")
+                        }
+                        $i += 1
+                    }
+                }
+            }
           }
-          $packages = $reportHash.GetEnumerator() | Sort-Object Name
-          # $cves = $cve.GetEnumerator() | Sort-Object -Descending
-          echo "::set-output name=VULN_PACKAGES::$packages"
-      - run: |
-          echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-      - name: Post comment
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
-            })
-      - name: Block merge
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const response = await github.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['unmergeable']
-            });
-            console.log(response);
+          # $packages = $reportHash.GetEnumerator() | Sort-Object Name
+          $text = @()
+          $reportHash.keys | ForEach-Object{
+            $text += '{0} : {1}' -f $_, $reportHash[$_]
+          }
+          # echo "::set-output name=VULN_PACKAGES::$packages"
+          echo "::set-output name=VULN_PACKAGES::$text"
+      # - run: |
+      #     echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+
+          
+      # - name: Post comment
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const ref = github.context.ref;
+      #       const PRnumber = ref.split("/")[0];
+      #       github.rest.issues.createComment({
+      #         issue_number: PRnumber,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
+      #       })
+      # - name: Block merge
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const response = await github.rest.issues.addLabels({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #         labels: ["name=Vulnerabilities found!","color=f29513"]
+      #       });
+      #       console.log(response);
+      - shell: pwsh
+        # if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
+        run: |
+          $labels = $labelsList = @()
+          echo "Getting the list of labels"
+          $labels = $(gh api -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels) | convertFrom-Json
+          foreach ($l in $labels){
+            $labelsList += $l.Name
+          }
+          echo "Labels found: $labelsList"
+          echo "Checking 'VULNERABILITY' label to exist"
+          if ($labelsList -notcontains 'VULNERABILITY'){
+            echo "Creating 'VULNERABILITY' label "
+            gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/labels -f "name=VULNERABILITY" -f "description=Docker image vulnerabilities found on `Run Trivy vulnerability scanner` step." -f "color=f29513"
+          }
+          $ref = "${{ GITHUB.REF_NAME }}"
+          $PRnumber = $ref.Split("/")[0]
+          echo "Set new comment body and label to PR"
+          gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=[SEVERITY]PackageName Version(s)WithFix<br/>------<br/>${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
+
           
