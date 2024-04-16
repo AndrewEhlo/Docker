@@ -54,7 +54,7 @@ jobs:
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
           # echo "::set-output name=VULN_PACKAGES::$text"
-          echo "VULN_PACKAGES=$text" >> $GITHUB_OUTPUT
+          echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
     
       - shell: pwsh
         if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
