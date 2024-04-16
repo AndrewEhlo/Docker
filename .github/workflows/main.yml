@@ -23,12 +23,8 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           output: './${{ env.tag }}.json'
-          
-      # - run: |
-      #     cat './${{ env.tag }}.json'
-      
       - name: Publish file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: '${{ env.tag }}.json'
           path: './${{ env.tag }}.json'
@@ -38,14 +34,6 @@ jobs:
         run: |
           $report = Get-Content './${{ env.tag }}.json' -Raw | ConvertFrom-Json
           $reportHash = @{}
-          # if ($report -ne ''){
-          #   $reportHash = @{}
-          #   foreach ($vulnerability in $report.Results) {
-          #     if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
-          #         $reportHash.Add($($vulnerability.Vulnerabilities.PkgName),$($vulnerability.Vulnerabilities.FixedVersion))
-          #         # $reportHash
-          #     }
-          # }
           foreach ($vulnerability in $report.Results) {
             if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains "[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)"){
                 if ($vulnerability.Vulnerabilities.PkgName.GetType().Name -eq 'String' -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
@@ -61,44 +49,15 @@ jobs:
                 }
             }
           }
-          # $packages = $reportHash.GetEnumerator() | Sort-Object Name
           $text = @()
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
-          # echo "::set-output name=VULN_PACKAGES::$packages"
-          echo "::set-output name=VULN_PACKAGES::$text"
-      # - run: |
-      #     echo "VULN_PACKAGES: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-
-          
-      # - name: Post comment
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       const ref = github.context.ref;
-      #       const PRnumber = ref.split("/")[0];
-      #       github.rest.issues.createComment({
-      #         issue_number: PRnumber,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: ${{ steps.trivyResult.outputs.VULN_PACKAGES }}
-      #       })
-      # - name: Block merge
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       const response = await github.rest.issues.addLabels({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         issue_number: context.issue.number,
-      #         labels: ["name=Vulnerabilities found!","color=f29513"]
-      #       });
-      #       console.log(response);
+          # echo "::set-output name=VULN_PACKAGES::$text"
+          echo "VULN_PACKAGES=$text" >> $GITHUB_OUTPUT
+    
       - shell: pwsh
-        # if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
+        if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
         run: |
           $labels = $labelsList = @()
           echo "Getting the list of labels"
