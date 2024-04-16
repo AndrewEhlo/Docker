@@ -63,7 +63,7 @@ jobs:
           }
           # $packages = $reportHash.GetEnumerator() | Sort-Object Name
           $text = @()
-          $reportHash.keys | ForEach-Object{
+          $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
           # echo "::set-output name=VULN_PACKAGES::$packages"
@@ -115,6 +115,6 @@ jobs:
           $ref = "${{ GITHUB.REF_NAME }}"
           $PRnumber = $ref.Split("/")[0]
           echo "Set new comment body and label to PR"
-          gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=[SEVERITY]PackageName Version(s)WithFix<br/>------<br/>${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
+          gh api --method POST -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/${{ github.repository }}/issues/$PRnumber -f "body=[SEVERITY] PackageName Version(s)WithFix<br/>------<br/>${{ steps.trivyResult.outputs.VULN_PACKAGES }}" -f "labels[]=VULNERABILITY"
 
           
