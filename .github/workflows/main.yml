@@ -47,14 +47,14 @@ jobs:
           #     }
           # }
           foreach ($vulnerability in $report.Results) {
-            if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains "[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)"){
+            if ($Null -ne $vulnerability.Vulnerabilities.PkgName -and $reportHash.Keys -notcontains "<br />[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)"){
                 if ($vulnerability.Vulnerabilities.PkgName.GetType().Name -eq 'String' -and $reportHash.Keys -notcontains $vulnerability.Vulnerabilities.PkgName){
-                    $reportHash.Add("[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)",$($vulnerability.Vulnerabilities.FixedVersion))
+                    $reportHash.Add("<br />[$($vulnerability.Vulnerabilities.Severity)] $($vulnerability.Vulnerabilities.PkgName)",$($vulnerability.Vulnerabilities.FixedVersion))
                 } else {
                     $i = 0
                     while ($i -lt $vulnerability.Vulnerabilities.PkgName.Length) {
-                        if ($reportHash.Keys -notcontains "[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])"){
-                            $reportHash.Add( "[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])",$($vulnerability.Vulnerabilities.FixedVersion[$i]))
+                        if ($reportHash.Keys -notcontains "<br />[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])"){
+                            $reportHash.Add( "<br />[$($vulnerability.Vulnerabilities.Severity[$i])] $($vulnerability.Vulnerabilities.PkgName[$i])",$($vulnerability.Vulnerabilities.FixedVersion[$i]))
                         }
                         $i += 1
                     }
