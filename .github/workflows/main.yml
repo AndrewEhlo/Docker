@@ -80,6 +80,7 @@ jobs:
       - uses: actions/checkout@v4
       - shell: pwsh
         run: |
+          git branch --list
           $branchList = git branch --list 'main'
           if ($Null -ne $branchList) {
             $branchMain = $branchList.Replace(' ','')
