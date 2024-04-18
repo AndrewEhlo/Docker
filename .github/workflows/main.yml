@@ -82,8 +82,8 @@ jobs:
           fetch-depth: 0
       - shell: pwsh
         run: |
-          git branch --list
-          $branchList = git branch --list 'main'
+          git branch --all --list
+          $branchList = git branch --all --list 'main'
           if ($Null -ne $branchList) {
             $branchMain = $branchList.Replace(' ','')
             if ($branchMain -eq 'main') {
