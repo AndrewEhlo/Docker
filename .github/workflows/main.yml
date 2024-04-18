@@ -80,10 +80,9 @@ jobs:
       - uses: actions/checkout@v4
       - shell: pwsh
         run: |
-          $branchList = git branch --list 'main'
-          echo "branchList = $branchList"
-          if ($branchList -eq 'main') {
-            echo "main"
+          $branchMain = $(git branch --list 'main').Replace(' ','')
+          if ($branchMain -eq 'main') {
+            echo "branch = $branchMain"
           } else {
-            echo "$branchList"
+            echo "branch = $branchMain"
           }
