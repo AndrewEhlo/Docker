@@ -81,6 +81,7 @@ jobs:
       - shell: pwsh
         run: |
           $branchList = git branch --list 'main'
+          echo "branchList = $branchList"
           if ($branchList -eq 'main') {
             echo "main"
           } else {
