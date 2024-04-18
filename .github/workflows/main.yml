@@ -83,13 +83,13 @@ jobs:
       - shell: pwsh
         run: |
           git branch --all --list
-          $branchList = git branch --all --list 'main'
+          $branchList = git branch --all --list '*/main'
           if ($Null -ne $branchList) {
             $branchMain = $branchList.Replace(' ','')
-            if ($branchMain -eq 'main') {
-              echo "MainBranch = $branchMain"
+            if ($branchMain -eq 'remotes/origin/main') {
+              $branchMain = 'main'
             }
           } else {
             $branchMain = 'master'
-            echo "MainBranch = $branchMain"
           }
+          echo "MainBranch = $branchMain"
