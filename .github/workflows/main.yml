@@ -107,8 +107,8 @@ jobs:
         with:
           project: VDS
           issuetype: "Task"
-          summary: "[SEVERITY] PackageName Version(s)WithFix<br/>------<br/>${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
-          description: "The description"
+          summary: "Docker image vulnerabilities have been found"
+          description: "[SEVERITY] PackageName Version(s)WithFix<br/>------<br/>${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
       
       - name: Log
         run: echo "Created issue ${{ steps.create.outputs.issue }}"
