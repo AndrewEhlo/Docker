@@ -55,7 +55,7 @@ jobs:
           $array = @()
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
-            $array += "$($_.Key): $($_.Value.replace("<br />","\n"))"
+            $array += '{0} : {1}' -f $_, $reportHash[$_.Value.replace("<br />","\n")]
           }
           # $reportHash.GetEnumerator() | ForEach-Object {
           #     $array += "$($_.Key): $($_.Value.replace("<br />","\r\n"))"
