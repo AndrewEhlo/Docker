@@ -57,7 +57,7 @@ jobs:
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
           $reportHash.GetEnumerator() | ForEach-Object {
-              $array += "$($_.Key): $($_.Value){newline}"
+              $array += "$($_.Key): $($_.Value)  "
           }
           # echo "::set-output name=VULN_PACKAGES::$text"
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
