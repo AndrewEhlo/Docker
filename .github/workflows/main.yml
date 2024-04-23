@@ -105,7 +105,7 @@ jobs:
         id: create
         uses: tomhjp/gh-action-jira-create@v0.1.3
         with:
-          project: FOO
+          project: VDS
           issuetype: "Task"
           summary: "The summary"
           description: "The description"
