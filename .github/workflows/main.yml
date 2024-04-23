@@ -52,12 +52,16 @@ jobs:
             }
           }
           $text = @()
+          $array = @()
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
+          $reportHash.GetEnumerator() | ForEach-Object {
+              $array += "$($_.Key): $($_.Value)"
+          }
           # echo "::set-output name=VULN_PACKAGES::$text"
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
-          echo "REPORT_HASH=$reportHash" >> $env:GITHUB_OUTPUT
+          echo "REPORT_HASH=$array" >> $env:GITHUB_OUTPUT
     
       - shell: pwsh
         if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
