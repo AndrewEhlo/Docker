@@ -55,10 +55,11 @@ jobs:
           $array = @()
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
+            $array += "$($_.Key): $($_.Value.replace("<br />","\n"))"
           }
-          $reportHash.GetEnumerator() | ForEach-Object {
-              $array += "$($_.Key): $($_.Value.replace("<br />","\r\n"))"
-          }
+          # $reportHash.GetEnumerator() | ForEach-Object {
+          #     $array += "$($_.Key): $($_.Value.replace("<br />","\r\n"))"
+          # }
           # echo "::set-output name=VULN_PACKAGES::$text"
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
           echo "REPORT_HASH=$array" >> $env:GITHUB_OUTPUT
