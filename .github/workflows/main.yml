@@ -9,14 +9,16 @@ jobs:
     name: Scan
     runs-on: ubuntu-20.04
     env:
-      tag: '3.809.0-alpha.12863-dev-06cf1fbb'
+      # tag: '3.809.0-alpha.12863-dev-06cf1fbb'
+      tag: '3.818.0-8a4fba1e'
+      containerRegistry: 'ghcr.io/virtocommerce/virtostart'
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
           #image-ref: 'ghcr.io/virtocommerce/platform:${{ env.tag }}'
-          image-ref: 'ghcr.io/virtocommerce/virtostart:3.818.0-8a4fba1e'
+          image-ref: '${{ env.containerRegistry }}:${{ env.tag }}'
           format: 'json'
           exit-code: '0'
           ignore-unfixed: true
@@ -108,7 +110,7 @@ jobs:
           project: VDS
           issuetype: "Task"
           summary: "Docker image vulnerabilities have been found"
-          description: "[SEVERITY] PackageName Version(s)WithFix</n>------</n>${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
+          description: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}<br>------<br>[SEVERITY] PackageName Version(s)WithFix<br>------<br>${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
       
       - name: Log
         run: echo "Created issue ${{ steps.create.outputs.issue }}"
