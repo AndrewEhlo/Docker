@@ -113,7 +113,7 @@ jobs:
       #     description: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\n[SEVERITY] PackageName Version(s)WithFix\n\n------\n\n${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
 
       - name: Comment
-        uses: tomhjp/gh-action-jira-comment@v0.1.3
+        uses: tomhjp/gh-action-jira-comment@v0.2.0
         with:
           issue: VDS-3406
           comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\n[SEVERITY] PackageName Version(s)WithFix\n\n------\n\n${{ steps.trivyResult.outputs.VULN_PACKAGES }}"
