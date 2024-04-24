@@ -61,7 +61,11 @@ jobs:
              #      }        
              #  )
           }
-          $result = $reportHash.GetEnumerator() | ConvertTo-Html
+          write-output "reportHash:"
+          $reportHash | ConvertTo-Html
+          Write-output "text:"
+          $text | ConvertTo-Html
+          $result = $reportHash | ConvertTo-Html
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
