@@ -55,12 +55,13 @@ jobs:
           # $array = @()
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
-             $result += @([PSCustomObject]@{ 
-                  'key' = '{0}';
-                  'value' = '{1}';
-                  }        
-              )
+             # $result += @([PSCustomObject]@{ 
+             #      'key' = '{0}';
+             #      'value' = '{1}';
+             #      }        
+             #  )
           }
+          $result = [pscustomobject]$reportHash
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
