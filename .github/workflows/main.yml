@@ -57,7 +57,7 @@ jobs:
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
           $text.ForEach({
-              $array += "$($_.replace("<br />","``r``n"))"
+              $array += "$($_.replace("<br />","\n\n"))"
           })
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
           echo "REPORT_HASH=$array" >> $env:GITHUB_OUTPUT
