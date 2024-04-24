@@ -56,7 +56,7 @@ jobs:
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
-          $array = Write-output $text
+          $array = Write-output $text | ft
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
