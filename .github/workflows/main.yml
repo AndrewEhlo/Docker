@@ -61,7 +61,7 @@ jobs:
              #      }        
              #  )
           }
-          $result = [pscustomobject]$reportHash | fl
+          $result = $reportHash.GetEnumerator() | ConvertTo-Html
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
