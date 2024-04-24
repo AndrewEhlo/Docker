@@ -65,7 +65,7 @@ jobs:
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
-          echo "REPORT_HASH=$array" >> $env:GITHUB_OUTPUT
+          echo "REPORT_HASH=$result" >> $env:GITHUB_OUTPUT
     
       - shell: pwsh
         if: ${{ steps.trivyResult.outputs.VULN_PACKAGES != '' }} 
