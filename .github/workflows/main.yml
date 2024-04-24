@@ -130,7 +130,7 @@ jobs:
         with:
           issue: VDS-3406
           # comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\n[SEVERITY] PackageName : Version(s)WithFix\n\n------\n\n${{ steps.trivyResult.outputs.REPORT_HASH }}"
-          comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\nReport file: ${{ steps.publishFile.outputs.artifact-url }}"
+          comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\nReport file: ${{ steps.publishFile.outputs.artifact-url }}\n\n------\n\n${{ steps.trivyResult.outputs.result }}"
       
       - name: Log
         run: echo "Created issue ${{ steps.create.outputs.issue }}"
