@@ -26,6 +26,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
           output: './${{ env.tag }}.json'
       - name: Publish file
+        id: publishFile
         uses: actions/upload-artifact@v4
         with:
           name: '${{ env.tag }}.json'
@@ -63,8 +64,6 @@ jobs:
           }
           write-output "reportHash:"
           $reportHash | ConvertTo-Html
-          Write-output "text:"
-          $text | ConvertTo-Html
           $result = $reportHash | ConvertTo-Html
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
@@ -130,7 +129,8 @@ jobs:
         uses: tomhjp/gh-action-jira-comment@v0.2.0
         with:
           issue: VDS-3406
-          comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\n[SEVERITY] PackageName : Version(s)WithFix\n\n------\n\n${{ steps.trivyResult.outputs.REPORT_HASH }}"
+          # comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\n[SEVERITY] PackageName : Version(s)WithFix\n\n------\n\n${{ steps.trivyResult.outputs.REPORT_HASH }}"
+          comment: "Scanned image: ${{ env.containerRegistry }}:${{ env.tag }}\n\n------\n\nReport file: ${{ steps.publishFile.outputs.artifact-url }}"
       
       - name: Log
         run: echo "Created issue ${{ steps.create.outputs.issue }}"
