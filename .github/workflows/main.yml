@@ -56,9 +56,9 @@ jobs:
           $reportHash.keys | Sort-Object Name | ForEach-Object{
             $text += '{0} : {1}' -f $_, $reportHash[$_]
           }
-          $text.ForEach {
+          $text.ForEach({
               $array += "$($_.Value.replace("<br />","``r``n"))"
-          }
+          })
           echo "VULN_PACKAGES=$text" >> $env:GITHUB_OUTPUT
           echo "REPORT_HASH=$array" >> $env:GITHUB_OUTPUT
     
