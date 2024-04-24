@@ -61,7 +61,7 @@ jobs:
              #      }        
              #  )
           }
-          $result = [pscustomobject]$reportHash
+          $result = [pscustomobject]$reportHash | fl
           # $text.ForEach({
           #     $array += "$($_.replace("<br />","\n\n"))"
           # })
