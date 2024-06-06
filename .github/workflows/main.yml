@@ -18,7 +18,7 @@ jobs:
         run: |
           version = cat package.json | jq .version
           name = cat package.json | jq .name
-          echo name-version
+          echo $name-$version
           zip -r compressed_filename.zip foldername
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
