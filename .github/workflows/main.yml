@@ -16,8 +16,9 @@ jobs:
     steps:
       - name: Add files to zip
         run: |
-          version=$(jq -r .version package.json)
-          name=$(jq -r .name package.json)
+          ls
+          version=$(jq -r .version ./package.json)
+          name=$(jq -r .name ./package.json)
           echo "$name-$version"
           zip -r compressed_filename.zip foldername
       - name: Run Trivy vulnerability scanner
