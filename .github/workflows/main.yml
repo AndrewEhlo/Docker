@@ -14,6 +14,12 @@ jobs:
       containerRegistry: 'ghcr.io/virtocommerce/virtostart'
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
+      - name: Add files to zip
+        run: |
+          version = cat package.json | jq .version
+          name = cat package.json | jq .name
+          echo name-version
+          zip -r compressed_filename.zip foldername
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
