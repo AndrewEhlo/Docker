@@ -19,12 +19,15 @@ jobs:
           fetch-depth: 0
       - name: Add files to zip
         run: |
-          mkdir -p ./d/default
+          mkdir -p ./tmp/default
           mkdir ./artifacts
-          mv ./YT-Docker-lesson/* ./d/default
-          zip -r ./artifacts/$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip ./d
-          ls
-          ls ./artifacts
+          mv ./YT-Docker-lesson/* ./tmp/default
+          zip -r ./artifacts/$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip ./tmp/default
+      - name: Publish zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: '$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip'
+          path: './artifacts/$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip'
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
