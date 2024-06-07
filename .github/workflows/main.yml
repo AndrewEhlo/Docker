@@ -20,6 +20,7 @@ jobs:
       - name: Add files to zip
         run: |
           mkdir -p ./d/default
+          mkdir ./artifacts
           mv ./YT-Docker-lesson ./d/default
           zip -r ./artifacts/$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip ./d
       - name: Run Trivy vulnerability scanner
