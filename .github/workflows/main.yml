@@ -23,7 +23,7 @@ jobs:
           mkdir ./artifacts
           mv ./YT-Docker-lesson/* ./tmp/default
           cd ./tmp
-          zip -r ./artifacts/$(jq -r .name ./package.json)-$(jq -r .version ./package.json).zip ./default
+          zip -r ./artifacts/$(jq -r .name ../package.json)-$(jq -r .version ../package.json).zip ./default
       - name: Publish zip
         uses: actions/upload-artifact@v4
         with:
