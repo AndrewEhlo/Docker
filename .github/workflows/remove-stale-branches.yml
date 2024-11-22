@@ -17,3 +17,4 @@ jobs:
           exempt-branches-regex: "^(main|master|dev)$"
           operations-per-run: 100
           github-token: ${{ secrets.GH_TOKEN }}
+          ignore-branches-with-open-prs: true
