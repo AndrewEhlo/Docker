@@ -1,3 +1,5 @@
+name: Remove stale branches
+
 on:
   workflow_dispatch:
   schedule:
@@ -14,3 +16,4 @@ jobs:
           days-before-branch-stale: 14
           exempt-branches-regex: "^(main|master|dev)$"
           operations-per-run: 100
+          github-token: ${{ secrets.GH_TOKEN }}
