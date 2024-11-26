@@ -2,8 +2,8 @@ name: Remove stale branches
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *" # Everday at midnight
+  # schedule:
+  #   - cron: "0 0 * * *" # Everday at midnight
 
 jobs:
   remove-stale-branches:
